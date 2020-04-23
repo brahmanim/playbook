@@ -1,0 +1,26 @@
+---
+# Playbook to set a user message in the MiqRequestTask
+# You can pass in extra vars to control the task_href_slug
+- hosts: localhost
+  vars:
+    options: { 'name': 'Fred Flintstone', 'address': 'Bedrock' }
+
+  tasks:
+    - name: Set the task url
+      set_fact:
+        task_url: "{{ manageiq.api_url }}/api/{{ manageiq.task_href_slug }}"
+
+    - name: Set the user message in the task
+      uri:
+        url: "{{ task_url }}"
+        method: POST
+        body:
+          action: edit
+          resource: "{ 'options': {{ options }}}"
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: output

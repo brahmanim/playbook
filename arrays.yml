@@ -1,0 +1,21 @@
+---
+# Takes 1 parameters that can be passed in as --extra-vars
+#
+# my_array => an array of values
+#
+# ansible-playbook -c local -i localhost, arrays.yml --extra-vars='{"my_array": [1,2,3]}'
+#
+  - hosts: all 
+    user: root
+    gather_facts: no
+    tasks:
+    - name: Log array values passed in
+      debug:
+        msg: "{{ my_array }}"
+
+    - name: First array item
+      debug:
+        msg: "{{ my_array[0] }}"
+    - name: Length of array
+      debug:
+        msg: "{{ my_array|length }}"

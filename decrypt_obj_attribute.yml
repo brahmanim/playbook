@@ -1,0 +1,59 @@
+---
+# Playbook to update attributes in the root object in automate workspace
+# This example shows how to set a Automate Retry and also allows you
+# to preserve state attributes
+# You can pass in extra vars to control the automate_workspace
+- hosts: localhost
+  vars:
+    encrypted_attrs: { 'object': 'root', 'attribute': 'elmst' }
+    method_attrs: { 'object': 'method_parameters', 'attribute': 'password' }
+
+  tasks:
+    - name: Set the automate workspace url
+      set_fact:
+        aws_url: "{{ manageiq.api_url }}/api/{{ manageiq.automate_workspace }}"
+
+    - name: Fetch the Workspace
+      uri:
+        url: "{{ aws_url }}"
+        method: GET 
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200 
+      register: workspace
+
+    - debug: var=workspace
+
+    - name: Get the decrypted object attribute
+      uri:
+        url: "{{ aws_url }}"
+        method: POST
+        body:
+          action: decrypt
+          resource: "{{ encrypted_attrs }}"
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: result
+    - debug: var=result.json.value
+
+    - name: Get the decrypted method parameter
+      uri:
+        url: "{{ aws_url }}"
+        method: POST
+        body:
+          action: decrypt
+          resource: "{{ method_attrs }}"
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: result
+    - debug: var=result.json.value

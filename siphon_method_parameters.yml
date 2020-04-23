@@ -1,0 +1,38 @@
+---
+# Playbook to update attributes in the root object in automate workspace
+# This example shows how to set attributes in the root object
+# by siphoning method parameters
+
+- hosts: localhost
+  tasks:
+    - name: Set the automate workspace url
+      set_fact:
+        aws_url: "{{ manageiq.api_url }}/api/{{ manageiq.automate_workspace }}"
+
+    - name: Fetch the Workspace
+      uri:
+        url: "{{ aws_url }}"
+        method: GET 
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200 
+      register: workspace
+
+    - debug: var=workspace
+
+    - name: Set the attributes in the root object
+      uri:
+        url: "{{ aws_url }}"
+        method: POST
+        body:
+          action: edit
+          resource: "{ 'objects': { 'root': {{ workspace['json']['input']['method_parameters'] }} }, 'state_vars': {}}"
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: output

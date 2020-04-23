@@ -1,0 +1,16 @@
+---
+# Takes 1 parameters that can be passed in as --extra-vars
+#
+# my_var => an optional string
+#
+# ansible-playbook -c local -i localhost, pick_default.yml --extra-vars='{"my_var": 'fred'}'
+# or just this which will pick the default nada
+# ansible-playbook -c local -i localhost, pick_default.yml
+#
+  - hosts: all 
+    user: root
+    gather_facts: no
+    tasks:
+    - name: Log a default value
+      debug:
+        msg: "{{ my_var |default('nada',true) }}"
