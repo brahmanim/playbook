@@ -1,0 +1,39 @@
+---
+# Playbook to update attributes in the root object in automate workspace
+# You can pass in extra vars to control the automate_workspace
+- hosts: localhost
+  vars:
+    root_attrs: { 'values': { 'optionA': 'Option A', 'optionB': 'Option B'}, 'sort_by': 'none', 'data_type': 'string', 'required': 'true', 'sort_order': 'ascending' } 
+
+    state_attrs: { }
+  tasks:
+    - name: Set the automate workspace url
+      set_fact:
+        aws_url: "{{ manageiq.api_url }}/api/{{ manageiq.automate_workspace }}"
+    - name: Fetch the Workspace
+      uri:
+        url: "{{ aws_url }}"
+        method: GET 
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200 
+      register: workspace
+
+    - debug: var=workspace
+
+    - name: Update the root object in the workspace
+      uri:
+        url: "{{ aws_url }}"
+        method: POST
+        body:
+          action: edit
+          resource: "{ 'objects': { 'root': {{ root_attrs }} }, 'state_vars': {{ state_attrs }}}"
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: output

@@ -1,0 +1,32 @@
+---
+# Playbook to set a user message in the MiqRequestTask
+# You can pass in extra vars 
+# manageiq_api_url
+# manageiq_task_href_slug
+# manageiq_username
+# manageiq_password
+# manageiq_message
+- hosts: localhost
+  vars:
+    options: { 'user_message': "{{ manageiq_message }}" }
+
+  tasks:
+    - name: Set the task url
+      set_fact:
+        task_url: "{{ manageiq_api_url }}/api/{{ manageiq_task_href_slug }}"
+
+    - name: Set the user message in the task
+      uri:
+        url: "{{ task_url }}"
+        method: POST
+        user: "{{ manageiq_username }}"
+        password: "{{ manageiq_password }}"
+        body:
+          action: edit
+          resource: "{ 'options': {{ options }}}"
+        body_format: json
+        validate_certs: False
+        headers:
+          Content-Type: "application/json" 
+        status_code: 200
+      register: output

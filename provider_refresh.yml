@@ -1,0 +1,47 @@
+---
+# Playbook to issue a Provider Refresh and wait for the refresh to end
+# You can pass in extra vars to control the max retries and retry interval
+- hosts: localhost
+  vars:
+    provider_id: "1000000000002"
+    max_retries: 9
+    retry_interval: 20
+  tasks:
+    - name: Set the Provider URL
+      set_fact:
+        provider_url: "{{ manageiq.api_url }}/api/providers/{{ provider_id }}"
+
+    - name: Refresh Amazon EC2 provider in CloudForms
+      uri:
+        url: "{{ provider_url }}"
+        method: POST
+        body:
+          action: refresh
+        body_format: json
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: output
+#    - debug: var=output
+    - name: set the task href
+      set_fact:
+        task_url: "{{ output.json.task_href}}"
+#    - debug: var=task_url
+
+    - name: Wait for the refresh to end
+      uri:
+        url: "{{ task_url }}"
+        method: GET
+        validate_certs: False
+        headers:
+          X-Auth-Token: "{{ manageiq.api_token }}"
+          Content-Type: "application/json" 
+        status_code: 200
+      register: task_result
+      until: task_result.json.state == 'Finished' or task_result.json.status == 'Error'
+      failed_when: task_result.json.status == 'Error'
+      retries: "{{max_retries}}"
+      delay: "{{retry_interval}}"
+#    - debug: var=task_result
