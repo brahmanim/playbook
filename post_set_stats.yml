@@ -1,0 +1,15 @@
+---
+# This playbook prints a simple debug message and set_stats
+- name: Echo Hello, world!
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+  - debug: msg="Hello, world!"
+  - set_stats:
+      data:
+        email_body: "The following ticket was requested by {{user_name}} Email address {{user_email}}.
+                     The arguments that were passed into the main order are:
+                     Order ID {{order_id}}, Order start time {{order_started}},
+                     And the Order status {{ order_status }}.
+                     The Service now ticket number assigned was {{ticket}}.
+                     The ticket was closed by {{support_tech}}"
