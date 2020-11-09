@@ -7,7 +7,7 @@
   - debug: msg="Hello, world!"
   - set_stats:
       data:
-        email_body: "The following ticket was requested by {{user_name}} Email address {{user_email}}.
+        expose_to_cloud_redhat_com_email_body: "The following ticket was requested by {{user_name}} Email address {{user_email}}.
                      The arguments that were passed into the main order are:
                      Order ID {{order_id}}, Order start time {{order_started}},
                      And the Order status {{ order_status }}.
