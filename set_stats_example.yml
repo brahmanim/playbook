@@ -20,4 +20,4 @@
           - 1.1.1.94
           - 1.1.1.93
           - 1.1.1.97
-        expose_to_cloud_redhat_com_ticket_number: '{{ticket}}'
+        expose_to_cloud_redhat_com_ticket_number: '{{ ticket }}'

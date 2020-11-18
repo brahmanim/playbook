@@ -5,3 +5,6 @@
   
   tasks:
   - debug: msg="Hello, world!"
+  - set_stats:
+      data:
+        expose_to_cloud_redhat_com_ansible_date_and_time: "{{ ansible_date_time.date }} {{ ansible_date_time.time }}"

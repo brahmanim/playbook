@@ -1,0 +1,10 @@
+---
+# This playbook prints a simple debug message and set_stats
+- name: Echo Hello, world!
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+  - debug: msg="Hello, world!"
+  - set_stats:
+      data:
+        expose_to_cloud_redhat_com_order_status: "The Order status {{ order_status }}"
