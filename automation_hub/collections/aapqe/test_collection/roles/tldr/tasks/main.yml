@@ -1,0 +1,9 @@
+---
+# tasks file for tldr
+#
+- name: Retrieve TLDR Page for given command
+  command: python3 -m tldr "{{ tldr_command }}"
+  register: tldr_output
+- name: Print TLDR stdout
+  debug:
+    msg: "{{ tldr_output.stdout }}"
