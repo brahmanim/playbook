@@ -2,7 +2,7 @@
 - name: Execute the helloword collection
   hosts: localhost
   vars:
-    word: "controller"
+    world: "controller"
   tasks:
     - include_role: 
         name: admin.helloword_collection.helloword
