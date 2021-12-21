@@ -1,8 +1,0 @@
----
-- name: Execute the TLDR role
-  hosts: localhost
-  vars:
-    tldr_command: nc
-  tasks:
-    - include_role: 
-        name: benny.benny_collection.tldr
