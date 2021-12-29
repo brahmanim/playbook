@@ -5,4 +5,4 @@
     world: "controller"
   tasks:
     - include_role: 
-        name: admin.helloword_collection.helloword
+        name: admin.helloworld_collection.helloworld
