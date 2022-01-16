@@ -1,0 +1,11 @@
+---
+# tasks file for helloworld
+
+- name: echo 'hello world'
+  command: echo "Hello {{ world }}"
+  register: result
+  changed_when: result.rc != 0
+
+- name: print message
+  debug:
+    msg: "{{ result.stdout_lines }}"
